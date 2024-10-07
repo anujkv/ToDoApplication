@@ -109,6 +109,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     viewModel.login(emailOrPhone, password, onResult = {
                         isLoading = false
                         if (it == "Sign-in Successful") {
+                            Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
                             navController.navigate(ClassName.HOME_SCREEN) {
                                 popUpTo(ClassName.LOGIN_SCREEN) {
                                     inclusive = true

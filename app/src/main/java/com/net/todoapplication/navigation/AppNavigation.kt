@@ -11,16 +11,18 @@ import com.net.todoapplication.view.auth.RegistrationScreen
 import com.net.todoapplication.view.home.HomeScreen
 import com.net.todoapplication.view.splash.SplashScreen
 import com.net.todoapplication.viewmodel.auth.LoginViewModel
+import com.net.todoapplication.viewmodel.auth.RegistrationViewModel
 
 @Composable
 fun AppNavigation() {
  val navController =  rememberNavController()
  val viewModel: LoginViewModel = hiltViewModel()
- 
+ val registrationViewModel: RegistrationViewModel = hiltViewModel()
+
  NavHost(navController = navController, startDestination = ClassName.SPLASH_SCREEN ){
   composable(ClassName.SPLASH_SCREEN){ SplashScreen(navController) }
   composable(ClassName.LOGIN_SCREEN){ LoginScreen(navController, viewModel) }
-  composable(ClassName.REGISTRATION_SCREEN){ RegistrationScreen(navController) }
+  composable(ClassName.REGISTRATION_SCREEN){ RegistrationScreen(navController,registrationViewModel) }
   composable(ClassName.HOME_SCREEN){ HomeScreen(navController) }
 
  }

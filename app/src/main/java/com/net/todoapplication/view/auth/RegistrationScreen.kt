@@ -1,5 +1,6 @@
 package com.net.todoapplication.view.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,13 +18,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -31,14 +32,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.dewan.todoapp.util.Validator
 import com.net.todoapplication.R
 import com.net.todoapplication.utils.ClassName
+import com.net.todoapplication.viewmodel.auth.RegistrationViewModel
 
 @Composable
-fun RegistrationScreen(navController: NavController) {
+fun RegistrationScreen(
+    navController: NavController,
+    viewModel: RegistrationViewModel= hiltViewModel()) {
     var emailOrPhone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -107,10 +112,29 @@ fun RegistrationScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = {
+            Button(
+                onClick = {
                 if (isEmailValid && isPasswordValid && isConfirmPasswordValid) {
                     isLoading = true
+                    viewModel.register(emailOrPhone,password,confirmPassword, onResult = {
+                        isLoading = false
+                        if (it == "Registration Successful") {
+                                Toast.makeText(
+                                    context,
+                                    "Registration Successful",
+                                    Toast.LENGTH_SHORT).show()
 
+
+                            navController.navigate(ClassName.LOGIN_SCREEN) {
+                                popUpTo(ClassName.REGISTRATION_SCREEN) {
+                                    inclusive = true
+                                }
+                            }
+                        }else{
+
+                            Toast.makeText(context,it, Toast.LENGTH_SHORT).show()
+                        }
+                    })
 
                 }
             },
@@ -147,5 +171,6 @@ fun RegistrationScreen(navController: NavController) {
 @Composable
 fun RegistrationScreenPreview() {
     val navController = rememberNavController()
-    RegistrationScreen(navController)
+    val viewmodel : RegistrationViewModel = hiltViewModel()
+    RegistrationScreen(navController,viewmodel)
 }
